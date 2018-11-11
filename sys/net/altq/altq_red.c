@@ -154,7 +154,7 @@
 #define	FP_SHIFT	12	/* fixed-point shift */
 
 /* red parameters for drop probability */
-#define	INV_P_MAX	10	/* inverse of max drop probability */
+#define	INV_P_MAX	6.67	/* inverse of max drop probability */
 #define	TH_MIN		5	/* min threshold */
 #define	TH_MAX		15	/* max threshold */
 
@@ -305,7 +305,7 @@ red_alloc(int weight, int inv_pmax, int th_min, int th_max, int flags,
 	 * precompute probability denominator
 	 *  probd = (2 * (TH_MAX-TH_MIN) / pmax) in fixed-point
 	 */
-	rp->red_probd = (2 * (rp->red_thmax - rp->red_thmin)
+	rp->red_probd = (2 * (rp->red_thmax - rp->red_thmin)* (rp->red_thmax - rp->red_thmin)
 			 * rp->red_inv_pmax) << FP_SHIFT;
 
 	microtime(&rp->red_last);
@@ -488,7 +488,7 @@ drop_early(int fp_len, int fp_probd, int count)
 {
 	int	d;		/* denominator of drop-probability */
 
-	d = fp_probd - count * fp_len;
+	d = fp_probd - count * fp_len* fp_len;
 	if (d <= 0)
 		/* count exceeds the hard limit: drop or mark */
 		return (1);
@@ -499,7 +499,7 @@ drop_early(int fp_len, int fp_probd, int count)
 	 * drop probability = (avg - TH_MIN) / d
 	 */
 
-	if ((arc4random() % d) < fp_len) {
+	if ((arc4random() % d) < fp_len * fp_len) {
 		/* drop or mark */
 		return (1);
 	}
