@@ -154,7 +154,7 @@
 #define	FP_SHIFT	12	/* fixed-point shift */
 
 /* red parameters for drop probability */
-#define	INV_P_MAX	6.67	/* inverse of max drop probability */
+#define	INV_P_MAX	7	/* inverse of max drop probability */
 #define	TH_MIN		5	/* min threshold */
 #define	TH_MAX		15	/* max threshold */
 
